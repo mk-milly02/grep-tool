@@ -10,7 +10,7 @@
      Each input line that matches at least one of the patterns is written to
      the standard output.
 
-`go run main.go -f 2 sample.tsv`
+`go run main.go "" test.txt | diff test.txt -`
 
 `go run main.go -f 1 -d , fourchords.csv | head -n5`
 
