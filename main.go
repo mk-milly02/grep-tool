@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -29,12 +30,13 @@ func main() {
 	}
 
 	if *r {
-		fs := ccgrep.GetFilesInDirectoryRecursively(path)
+		fs, pd := ccgrep.GetFilesInDirectoryRecursively(path)
 		for _, f := range fs {
 			text = ccgrep.ReadFromFile(f)
 			result, code = ccgrep.Match(text, pattern)
 			for _, line := range result {
-				fmt.Printf("%s:%s", filepath.Base(f), line)
+				px, _ := strings.CutPrefix(f, pd)
+				fmt.Printf("%s:%s", strings.TrimPrefix(px, "\\"), line)
 			}
 		}
 		os.Exit(code)
