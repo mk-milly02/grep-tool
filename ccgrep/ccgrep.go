@@ -23,6 +23,14 @@ func ReadFromFile(filepath string) []byte {
 	return content
 }
 
+func ReadFromStdIn() []byte {
+	content, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return content
+}
+
 func GetFilesInDirectoryRecursively(path string) (output []string, parentDir string) {
 	if path == "*" {
 		pwd, err := os.Getwd()
@@ -31,9 +39,7 @@ func GetFilesInDirectoryRecursively(path string) (output []string, parentDir str
 		}
 		path = pwd
 	}
-
 	parentDir = path
-
 	err := filepath.WalkDir(path,
 		func(path string, d fs.DirEntry, err error) error {
 			if strings.Contains(path, "txt") {
@@ -42,7 +48,6 @@ func GetFilesInDirectoryRecursively(path string) (output []string, parentDir str
 			return nil
 		},
 	)
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,6 +62,23 @@ func Match(text []byte, pattern string) (output []string, code int) {
 			break
 		}
 		if strings.Contains(line, pattern) {
+			output = append(output, line)
+		}
+	}
+	if len(output) == 0 {
+		code = 1
+	}
+	return output, code
+}
+
+func MatchInversely(text []byte, pattern string) (output []string, code int) {
+	reader := bytes.NewBuffer(text)
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			break
+		}
+		if !strings.Contains(line, pattern) {
 			output = append(output, line)
 		}
 	}

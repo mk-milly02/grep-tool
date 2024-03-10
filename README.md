@@ -15,3 +15,5 @@
 `go run main.go J rockbands.txt`
 
 `go run main.go -r "Nirvana" "*"`
+
+`go run main.go -r Nirvana * | go run main.go -v Madonna`
