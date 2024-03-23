@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"unicode"
 )
 
 func ReadFromFile(filepath string) []byte {
@@ -61,8 +62,27 @@ func Match(text []byte, pattern string) (output []string, code int) {
 		if err != nil {
 			break
 		}
-		if strings.Contains(line, pattern) {
-			output = append(output, line)
+		switch pattern {
+		case "\\d":
+			if strings.ContainsAny(line, "1234567890") {
+				output = append(output, line)
+			}
+		case "\\w":
+			has_symbol := 0
+			for _, char := range line {
+				if unicode.IsSymbol(char) || unicode.IsPunct(char) {
+					has_symbol = 1
+					break
+				}
+			}
+			if has_symbol == 0 {
+				output = append(output, line)
+			}
+
+		default:
+			if strings.Contains(line, pattern) {
+				output = append(output, line)
+			}
 		}
 	}
 	if len(output) == 0 {
