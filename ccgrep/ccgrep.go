@@ -62,12 +62,12 @@ func Match(text []byte, pattern string) (output []string, code int) {
 		if err != nil {
 			break
 		}
-		switch pattern {
-		case "\\d":
+		switch {
+		case pattern == "\\d":
 			if strings.ContainsAny(line, "1234567890") {
 				output = append(output, line)
 			}
-		case "\\w":
+		case pattern == "\\w":
 			has_symbol := 0
 			for _, char := range line {
 				if unicode.IsSymbol(char) || unicode.IsPunct(char) {
@@ -78,7 +78,16 @@ func Match(text []byte, pattern string) (output []string, code int) {
 			if has_symbol == 0 {
 				output = append(output, line)
 			}
-
+		case strings.HasPrefix(pattern, "^"):
+			search_string := strings.TrimPrefix(pattern, "^")
+			if strings.HasPrefix(line, search_string) {
+				output = append(output, line)
+			}
+		case strings.HasSuffix(pattern, "$"):
+			search_string := strings.TrimSuffix(pattern, "$")
+			if strings.HasSuffix(strings.TrimSpace(line), search_string) {
+				output = append(output, line)
+			}
 		default:
 			if strings.Contains(line, pattern) {
 				output = append(output, line)
