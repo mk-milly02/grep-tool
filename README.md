@@ -21,3 +21,7 @@
 `go run main.go "\d" test-subdir/BFS1985.txt`
 
 `go run main.go "\w" symbols.txt`
+
+`go run main.go A rockbands.txt | wc -l`
+
+`go run main.go -i A rockbands.txt | wc -l`
