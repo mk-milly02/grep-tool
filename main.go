@@ -12,6 +12,7 @@ import (
 func main() {
 	r := flag.Bool("r", false, "to recurse a directory tree")
 	v := flag.Bool("v", false, "inverts the search excluding and result that matches")
+	i := flag.Bool("i", false, "allows case insensitive search")
 	flag.Parse()
 
 	pattern := flag.Arg(0)
@@ -24,9 +25,12 @@ func main() {
 	switch path {
 	case "":
 		text = ccgrep.ReadFromStdIn()
-		if *v {
+		switch {
+		case *v:
 			result, code = ccgrep.MatchInversely(text, pattern)
-		} else {
+		case *i:
+			result, code = ccgrep.MatchCaseInsensitive(text, pattern)
+		default:
 			result, code = ccgrep.Match(text, pattern)
 		}
 		for _, line := range result {
@@ -37,9 +41,12 @@ func main() {
 	default:
 		if filepath.Ext(path) != "" { // is a file
 			text = ccgrep.ReadFromFile(path)
-			if *v {
+			switch {
+			case *v:
 				result, code = ccgrep.MatchInversely(text, pattern)
-			} else {
+			case *i:
+				result, code = ccgrep.MatchCaseInsensitive(text, pattern)
+			default:
 				result, code = ccgrep.Match(text, pattern)
 			}
 			for _, line := range result {
